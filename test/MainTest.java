@@ -1,69 +1,66 @@
 import static org.junit.jupiter.api.Assertions.*;
-import org.junit.jupiter.api.Test;
-
 import java.util.*;
-import java.util.stream.Collectors;
+import org.junit.jupiter.api.Test;
 
 class MainTest {
 
-        return bogies.stream()
+    // Helper class to mimic GoodsBogie from Main
+    static class GoodsBogie {
+        String type;
+        String cargo;
+
+        GoodsBogie(String type, String cargo) {
+            this.type = type;
+            this.cargo = cargo;
+        }
+    }
+
+    // Utility method to check safety compliance
+    private boolean isTrainSafetyCompliant(List<GoodsBogie> goodsBogies) {
+        return goodsBogies.stream()
+                .allMatch(b -> !b.type.equalsIgnoreCase("Cylindrical") || b.cargo.equalsIgnoreCase("Petroleum"));
     }
 
     @Test
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("Sleeper", 72),
+    void testSafety_AllBogiesValid() {
+        List<GoodsBogie> bogies = Arrays.asList(
+                new GoodsBogie("Rectangular", "Coal"),
+                new GoodsBogie("Cylindrical", "Petroleum"),
+                new GoodsBogie("Open", "Grain")
         );
-
-
+        assertTrue(isTrainSafetyCompliant(bogies));
     }
 
     @Test
-        List<Bogie> bogies = Arrays.asList(
+    void testSafety_CylindricalWithInvalidCargo() {
+        List<GoodsBogie> bogies = Arrays.asList(
+                new GoodsBogie("Cylindrical", "Coal")
         );
-
-
+        assertFalse(isTrainSafetyCompliant(bogies));
     }
 
     @Test
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("First Class", 24)
+    void testSafety_NonCylindricalBogiesAllowed() {
+        List<GoodsBogie> bogies = Arrays.asList(
+                new GoodsBogie("Rectangular", "Coal"),
+                new GoodsBogie("Open", "Grain")
         );
-
-
-        assertTrue(result.isEmpty());
+        assertTrue(isTrainSafetyCompliant(bogies));
     }
 
     @Test
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("Sleeper", 72),
+    void testSafety_MixedBogiesWithViolation() {
+        List<GoodsBogie> bogies = Arrays.asList(
+                new GoodsBogie("Rectangular", "Coal"),
+                new GoodsBogie("Cylindrical", "Coal"), // violation
+                new GoodsBogie("Open", "Grain")
         );
-
-
+        assertFalse(isTrainSafetyCompliant(bogies));
     }
 
     @Test
-        List<Bogie> bogies = Arrays.asList(
-        );
-
-
-    }
-
-    @Test
-        List<Bogie> bogies = Arrays.asList(
-                new Bogie("Sleeper", 72),
-        );
-
-
-    }
-
-    @Test
-        List<Bogie> bogies = new ArrayList<>();
-        bogies.add(new Bogie("Sleeper", 72));
-        bogies.add(new Bogie("AC Chair", 56));
-
-        int originalSize = bogies.size();
-
-
-        assertEquals(originalSize, bogies.size());
+    void testSafety_EmptyBogieList() {
+        List<GoodsBogie> bogies = new ArrayList<>();
+        assertTrue(isTrainSafetyCompliant(bogies));
     }
 }
