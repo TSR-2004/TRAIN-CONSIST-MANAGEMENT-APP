@@ -1,66 +1,53 @@
-import static org.junit.jupiter.api.Assertions.*;
-import java.util.*;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-class MainTest {
+class GoodsBogieTest {
 
-    // Helper class to mimic GoodsBogie from Main
-    static class GoodsBogie {
-        String type;
-        String cargo;
-
-        GoodsBogie(String type, String cargo) {
-            this.type = type;
-            this.cargo = cargo;
-        }
-    }
-
-    // Utility method to check safety compliance
-    private boolean isTrainSafetyCompliant(List<GoodsBogie> goodsBogies) {
-        return goodsBogies.stream()
-                .allMatch(b -> !b.type.equalsIgnoreCase("Cylindrical") || b.cargo.equalsIgnoreCase("Petroleum"));
-    }
-
+    // ✅ Safe assignment
     @Test
-    void testSafety_AllBogiesValid() {
-        List<GoodsBogie> bogies = Arrays.asList(
-                new GoodsBogie("Rectangular", "Coal"),
-                new GoodsBogie("Cylindrical", "Petroleum"),
-                new GoodsBogie("Open", "Grain")
-        );
-        assertTrue(isTrainSafetyCompliant(bogies));
+    void testCargo_SafeAssignment() {
+        GoodsBogie bogie = new GoodsBogie("Cylindrical");
+        bogie.assignCargo("Petroleum");
+
+        assertEquals("Petroleum", bogie.getCargo());
     }
 
+    // ❗ IMPORTANT: Exception is HANDLED internally → so no assertThrows here
     @Test
-    void testSafety_CylindricalWithInvalidCargo() {
-        List<GoodsBogie> bogies = Arrays.asList(
-                new GoodsBogie("Cylindrical", "Coal")
-        );
-        assertFalse(isTrainSafetyCompliant(bogies));
+    void testCargo_UnsafeAssignmentHandled() {
+        GoodsBogie bogie = new GoodsBogie("Rectangular");
+        bogie.assignCargo("Petroleum");
+
+        // cargo should NOT be assigned
+        assertNull(bogie.getCargo());
     }
 
+    // ❗ Ensure cargo remains null after failure
     @Test
-    void testSafety_NonCylindricalBogiesAllowed() {
-        List<GoodsBogie> bogies = Arrays.asList(
-                new GoodsBogie("Rectangular", "Coal"),
-                new GoodsBogie("Open", "Grain")
-        );
-        assertTrue(isTrainSafetyCompliant(bogies));
+    void testCargo_CargoNotAssignedAfterFailure() {
+        GoodsBogie bogie = new GoodsBogie("Rectangular");
+        bogie.assignCargo("Petroleum");
+
+        assertNull(bogie.getCargo());
     }
 
+    // ✅ Program continuation check
     @Test
-    void testSafety_MixedBogiesWithViolation() {
-        List<GoodsBogie> bogies = Arrays.asList(
-                new GoodsBogie("Rectangular", "Coal"),
-                new GoodsBogie("Cylindrical", "Coal"), // violation
-                new GoodsBogie("Open", "Grain")
-        );
-        assertFalse(isTrainSafetyCompliant(bogies));
+    void testCargo_ProgramContinuesAfterException() {
+        GoodsBogie bogie1 = new GoodsBogie("Rectangular");
+        bogie1.assignCargo("Petroleum"); // fails
+
+        GoodsBogie bogie2 = new GoodsBogie("Cylindrical");
+        bogie2.assignCargo("Petroleum"); // should still work
+
+        assertEquals("Petroleum", bogie2.getCargo());
     }
 
+    // ✅ Finally block indirectly validated (no crash + execution completes)
     @Test
-    void testSafety_EmptyBogieList() {
-        List<GoodsBogie> bogies = new ArrayList<>();
-        assertTrue(isTrainSafetyCompliant(bogies));
+    void testCargo_FinallyBlockExecution() {
+        GoodsBogie bogie = new GoodsBogie("Rectangular");
+
+        assertDoesNotThrow(() -> bogie.assignCargo("Petroleum"));
     }
 }
