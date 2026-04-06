@@ -1,74 +1,45 @@
-import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import java.util.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-class PassengerBogieTest {
-
-    // ---------------- UC14: Custom Exception Tests ----------------
+class BubbleSortTest {
 
     @Test
-    void testException_ValidCapacityCreation() {
-        try {
-            PassengerBogie sleeper = new PassengerBogie("Sleeper", 72);
-            assertEquals("Sleeper", sleeper.getType());
-            assertEquals(72, sleeper.getCapacity());
-        } catch (InvalidCapacityException e) {
-            fail("Exception should not be thrown for valid capacity");
-        }
+    void testSort_BasicSorting() {
+        int[] arr = {72, 56, 24, 70, 60};
+        BubbleSortUtil.bubbleSort(arr);
+
+        assertArrayEquals(new int[]{24, 56, 60, 70, 72}, arr);
     }
 
     @Test
-    void testException_NegativeCapacityThrowsException() {
-        InvalidCapacityException thrown = assertThrows(
-                InvalidCapacityException.class,
-                () -> new PassengerBogie("AC Chair", -10)
-        );
-        assertEquals("Capacity must be greater than zero", thrown.getMessage());
+    void testSort_AlreadySortedArray() {
+        int[] arr = {24, 56, 60, 70, 72};
+        BubbleSortUtil.bubbleSort(arr);
+
+        assertArrayEquals(new int[]{24, 56, 60, 70, 72}, arr);
     }
 
     @Test
-    void testException_ZeroCapacityThrowsException() {
-        InvalidCapacityException thrown = assertThrows(
-                InvalidCapacityException.class,
-                () -> new PassengerBogie("First Class", 0)
-        );
-        assertEquals("Capacity must be greater than zero", thrown.getMessage());
+    void testSort_DuplicateValues() {
+        int[] arr = {72, 56, 56, 24};
+        BubbleSortUtil.bubbleSort(arr);
+
+        assertArrayEquals(new int[]{24, 56, 56, 72}, arr);
     }
 
     @Test
-    void testException_ExceptionMessageValidation() {
-        InvalidCapacityException thrown = assertThrows(
-                InvalidCapacityException.class,
-                () -> new PassengerBogie("Sleeper", -5)
-        );
-        assertTrue(thrown.getMessage().contains("greater than zero"));
+    void testSort_SingleElementArray() {
+        int[] arr = {50};
+        BubbleSortUtil.bubbleSort(arr);
+
+        assertArrayEquals(new int[]{50}, arr);
     }
 
     @Test
-    void testException_ObjectIntegrityAfterCreation() {
-        try {
-            PassengerBogie bogie = new PassengerBogie("AC Chair", 56);
-            assertEquals("AC Chair", bogie.getType());
-            assertEquals(56, bogie.getCapacity());
-        } catch (InvalidCapacityException e) {
-            fail("Exception should not occur for valid capacity");
-        }
-    }
+    void testSort_AllEqualValues() {
+        int[] arr = {40, 40, 40};
+        BubbleSortUtil.bubbleSort(arr);
 
-    @Test
-    void testException_MultipleValidBogiesCreation() {
-        try {
-            List<PassengerBogie> bogies = Arrays.asList(
-                    new PassengerBogie("Sleeper", 72),
-                    new PassengerBogie("AC Chair", 56),
-                    new PassengerBogie("First Class", 24)
-            );
-            assertEquals(3, bogies.size());
-            assertEquals(72, bogies.get(0).getCapacity());
-            assertEquals(56, bogies.get(1).getCapacity());
-            assertEquals(24, bogies.get(2).getCapacity());
-        } catch (InvalidCapacityException e) {
-            fail("Exception should not occur for valid capacities");
-        }
+        assertArrayEquals(new int[]{40, 40, 40}, arr);
     }
 }
